@@ -4,24 +4,49 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
-    public float acceleration, max_velocity,multiplier; 
+    [Header("Movement")]
+    public float acceleration;
+    public float max_velocity,multiplier; 
+    [Header("Dash")]
+    public float dash_force;
+    public float dash_multiplier, dash_cooldown;
+    [Header("Trail")]
+    public TrailRenderer trail;
+    public Color trail_color,dash_trail_color;
+
+    //privates
     private Rigidbody2D rb;
+    private bool can_dash;
     private Vector2 force = new Vector2();
-    // Start is called before the first frame update
+    private float dash_timer = 0f;
+
     void Start()
     {
         // Get attached rigidbody
         rb = this.GetComponent<Rigidbody2D>();
     }
 
-    // Update is called once per frame
     void Update(){
+        //update dash timer
+        if(!can_dash)dash_timer -= Time.deltaTime;
+        if(dash_timer < 0f) can_dash = true;
+
+        //change trail colors
+        if(can_dash)trail.startColor = trail_color;
+        else trail.startColor = dash_trail_color;
+
         // Get up/down/left/right inputs
         if(Input.GetAxis("Horizontal") != 0){
             force.x = Input.GetAxis("Horizontal");
         }
         if(Input.GetAxis("Vertical") != 0){
             force.y = Input.GetAxis("Vertical");
+        }
+        //dashing
+        if(Input.GetButtonDown("Jump") && can_dash) {
+            rb.AddForce(new Vector2(Input.GetAxis("Horizontal"),Input.GetAxis("Vertical")) * dash_force * dash_multiplier, ForceMode2D.Impulse);
+            can_dash = false;
+            dash_timer = dash_cooldown;
         }
     }
 
