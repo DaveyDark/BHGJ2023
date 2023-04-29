@@ -14,37 +14,25 @@ public class Terrain : MonoBehaviour
     
     public Image overlay; //This should be moved to GameManager
 
-
-
-
     class TerrainProperty{
         public float max_time,drag;
         //public TerrainType[] strong_against;
-       
     }
 
     private static Dictionary<TerrainType,TerrainProperty> terrainProperties = new Dictionary<TerrainType,TerrainProperty> { 
-
-        { TerrainType.EARTH,new TerrainProperty{ max_time = 10,drag = 7} },
-        { TerrainType.WATER,new TerrainProperty{ max_time = 3,drag = 1} },
-        
-    
+        { TerrainType.EARTH,new TerrainProperty{ max_time = 5,drag = 8} },
+        { TerrainType.WATER,new TerrainProperty{ max_time = 7,drag = 3} },
+        { TerrainType.AIR,new TerrainProperty{ max_time = 4,drag = 1}},
+        { TerrainType.FIRE,new TerrainProperty{ max_time = 8,drag = 6} },
     };
-
 
     private float current_time=0f;
     private bool activated = false;
     private TerrainProperty properties;
-    
-
-
 
     void Start()
     {
         properties = terrainProperties[terrainType];
-
-        
-
     }
 
     // Update is called once per frame
@@ -59,19 +47,13 @@ public class Terrain : MonoBehaviour
 
                 Debug.Log("Time exceeded");
                 //Game Over
-
-
             }
 
-            
             //Change Overlay color
             Color color = overlay.color;
             color.a=(current_time/properties.max_time);
             overlay.color = color;
-            
-
         }
-        
     }
     
 
@@ -88,7 +70,7 @@ public class Terrain : MonoBehaviour
     }
 
     public void Deactivate(){
-        activated = false;
         overlay.color = new Color(overlay.color.r, overlay.color.g, overlay.color.b, 0f);
+        activated = false;
     }
 }

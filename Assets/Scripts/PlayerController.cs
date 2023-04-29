@@ -13,6 +13,8 @@ public class PlayerController : MonoBehaviour
     [Header("Trail")]
     public TrailRenderer trail;
     public Color trail_color,dash_trail_color;
+    [Header("Animation")]
+    public Animator animator;
 
     //privates
     private Rigidbody2D rb;
@@ -20,13 +22,18 @@ public class PlayerController : MonoBehaviour
     private Vector2 force = new Vector2();
     private float dash_timer = 0f;
     private float initialDrag;
+    private int state; //tracks elemental state of player
 
     void Start()
     {
         // Get attached rigidbody
         rb = this.GetComponent<Rigidbody2D>();
         initialDrag = rb.drag;
-
+        state = 0;
+        // 0 is air
+        // 1 is water
+        // 2 is fire
+        // 3 is earth
     }
 
     void Update(){
@@ -51,6 +58,12 @@ public class PlayerController : MonoBehaviour
             can_dash = false;
             dash_timer = dash_cooldown;
         }
+        if(Input.GetButtonDown("State1")) state = 0;
+        else if(Input.GetButtonDown("State2")) state = 1;
+        else if(Input.GetButtonDown("State3")) state = 2;
+        else if(Input.GetButtonDown("State4")) state = 3;
+        
+        animator.SetInteger("state",state);
     }
 
     void FixedUpdate(){
@@ -65,9 +78,8 @@ public class PlayerController : MonoBehaviour
     }
 
 
-    private void OnCollisionEnter2D( Collision2D collision )
+    private void OnTriggerEnter2D( Collider2D collision )
      {  
-        
         GameObject other = collision.gameObject;
         if (other.CompareTag("Terrain"))
         {
@@ -75,12 +87,9 @@ public class PlayerController : MonoBehaviour
             rb.drag = terrain.getDrag();
             terrain.Activate();
         }
-    
-    
-        
      }
 
-     private void OnCollisionExit2D( Collision2D collision )
+     private void OnTriggerExit2D( Collider2D collision )
      {
          GameObject other = collision.gameObject;
          if (other.CompareTag("Terrain"))
