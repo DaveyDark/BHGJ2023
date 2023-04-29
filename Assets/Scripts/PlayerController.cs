@@ -19,11 +19,14 @@ public class PlayerController : MonoBehaviour
     private bool can_dash;
     private Vector2 force = new Vector2();
     private float dash_timer = 0f;
+    private float initialDrag;
 
     void Start()
     {
         // Get attached rigidbody
         rb = this.GetComponent<Rigidbody2D>();
+        initialDrag = rb.drag;
+
     }
 
     void Update(){
@@ -60,4 +63,30 @@ public class PlayerController : MonoBehaviour
         clampedVelocity.y = Mathf.Clamp(clampedVelocity.y, -max_velocity, max_velocity);
         rb.velocity = clampedVelocity;
     }
+
+
+    private void OnCollisionEnter2D( Collision2D collision )
+     {  
+        
+        GameObject other = collision.gameObject;
+        if (other.CompareTag("Terrain"))
+        {
+            var terrain = other.GetComponent<Terrain>();
+            rb.drag = terrain.getDrag();
+            terrain.Activate();
+        }
+    
+    
+        
+     }
+
+     private void OnCollisionExit2D( Collision2D collision )
+     {
+         GameObject other = collision.gameObject;
+         if (other.CompareTag("Terrain"))
+         {  
+            rb.drag = initialDrag;
+            other.GetComponent<Terrain>().Deactivate();
+         }
+     }
 }
