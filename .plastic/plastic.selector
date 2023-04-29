@@ -1,0 +1,4 @@
+repository "BHGJ2023@Xenderox@cloud"
+  path "/"
+    br "/main"
+    co "/main"
