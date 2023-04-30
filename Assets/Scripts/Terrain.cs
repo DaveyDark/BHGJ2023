@@ -3,10 +3,12 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+public enum TerrainType{EARTH,WATER,FIRE,AIR,NONE};
+
 public class Terrain : MonoBehaviour
 {
     // Start is called before the first frame update
-    public enum TerrainType{EARTH,WATER,FIRE,AIR};
+    
 
     [Header("Terrain properties")]
     public TerrainType terrainType;
@@ -63,7 +65,7 @@ public class Terrain : MonoBehaviour
 
 
     public void Activate(){
-        current_time = 0f;
+        current_time = -1f;
         activated = true;
         overlay.color = overlayColor;
         

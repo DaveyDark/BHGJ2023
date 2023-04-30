@@ -24,6 +24,8 @@ public class PlayerController : MonoBehaviour
     private float initialDrag;
     private int state; //tracks elemental state of player
 
+    private Terrain lastTerrain;
+
     void Start()
     {
         // Get attached rigidbody
@@ -78,24 +80,40 @@ public class PlayerController : MonoBehaviour
     }
 
 
-    private void OnTriggerEnter2D( Collider2D collision )
+    private void  OnTriggerEnter2D( Collider2D collision )
      {  
         GameObject other = collision.gameObject;
         if (other.CompareTag("Terrain"))
         {
             var terrain = other.GetComponent<Terrain>();
+            
+            if(lastTerrain!=null){
+                lastTerrain.Deactivate();
+            }
+
+            lastTerrain = terrain;
             rb.drag = terrain.getDrag();
-            terrain.Activate();
+            lastTerrain.Activate();
+            
+            
+                
+                
+            
+            
+            
         }
+        
      }
 
      private void OnTriggerExit2D( Collider2D collision )
      {
          GameObject other = collision.gameObject;
          if (other.CompareTag("Terrain"))
-         {  
+        {  
             rb.drag = initialDrag;
-            other.GetComponent<Terrain>().Deactivate();
-         }
+            lastTerrain = other.GetComponent<Terrain>();
+        }
+        lastTerrain.Deactivate();
+        
      }
 }
